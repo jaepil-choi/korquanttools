@@ -11,6 +11,11 @@ matplotlib = "^3.4.3"
 beautifulsoup4 = "^4.10.0"
 finance-datareader = "^0.9.31"
 OpenDartReader = "^0.1.6"
+jupyterlab = "^3.2.1"
+tqdm = "^4.62.3"
+seaborn = "^0.11.2"
+scikit-learn = "^1.0.1"
+lxml = "^4.6.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
