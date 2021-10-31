@@ -56,3 +56,26 @@ class DataFetcher:
         df.loc[:, "trdDd"] = int(trdDd)
 
         return df
+        
+
+class CacheGenerator:
+    def __init__(self, start_date, end_date) -> None:
+        self.start_date = utils.validate_date2str(start_date)
+        self.end_date = utils.validate_date2str(end_date)
+        self.data_fetcher = DataFetcher()
+
+    def fetch_lv1(self, mktId="ALL", is_save=False): # start_date & end_date are inclusive
+        date_range = pd.date_range(self.start_date, self.end_date)
+        date_range = [date.strftime("%Y%m%d") for date in date_range]
+
+        # TODO: Fetch data by year and save it to free memory
+        lv1_df = pd.DataFrame()
+        for trdDd in tqdm(date_range):
+            res, trdDd = self.data_fetcher.get_response(trdDd, mktId)
+            df = self.data_fetcher.parse_response(res, trdDd)
+            lv1_df.append(df, ignore_index=True)
+        
+        if is_save:
+            lv1_df.to_pickle(f"{self.start_date}_to_{self.end_date}.pkl")
+
+        return lv1_df
