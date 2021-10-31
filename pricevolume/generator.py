@@ -76,6 +76,6 @@ class CacheGenerator:
             lv1_df.append(df, ignore_index=True)
         
         if is_save:
-            lv1_df.to_pickle(f"{self.start_date}_to_{self.end_date}.pkl")
+            lv1_df.to_pickle(PathConfig.cache_path / f"{self.start_date}_to_{self.end_date}.pkl")
 
         return lv1_df
