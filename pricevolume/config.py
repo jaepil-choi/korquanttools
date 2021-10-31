@@ -19,8 +19,8 @@ class ScraperConfig:
         default="http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd",
         metadata={"help": "KRX all stocks price & volume (http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020101)"}
     )
-    request_headers: dict = field(
-        default= {
+    request_headers: Dict[str, str] = field(
+        default_factory= {
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Encoding": "gzip, deflate",
             "Accept-Language": "en-US,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja;q=0.6",
@@ -36,8 +36,8 @@ class ScraperConfig:
             },
         metadata={"help": "Request header data used in the browser"}
     )
-    data_without_trdDd: dict = field(
-        default={
+    data_without_trdDd: Dict[str, Optional[str]] = field(
+        default_factory={
             "bld": "dbms/MDC/STAT/standard/MDCSTAT01501",
             "mktId": "ALL", # KOSPI: "STK", KOSDAQ: "KSQ", KONEX: "KNX"
             "trdDd": None, # format like: "20211029"
@@ -47,8 +47,8 @@ class ScraperConfig:
             },
         metadata={"help": "POST data without trading date field(trdDd)"}
     )
-    retry_strategy: dict = field(
-        default={
+    retry_strategy: Dict[int, Union[int, list]] = field(
+        default_factory={
             "total": 10,
             "status_forcelist": [413, 429, 500, 502, 503, 504],
             "method_whitelist": ["GET", "POST"],
