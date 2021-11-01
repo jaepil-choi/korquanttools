@@ -20,7 +20,7 @@ class ScraperConfig:
         metadata={"help": "KRX all stocks price & volume (http://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201020101)"}
     )
     request_headers: Dict[str, str] = field(
-        default_factory= {
+        default_factory=lambda: {
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Encoding": "gzip, deflate",
             "Accept-Language": "en-US,en;q=0.9,ko-KR;q=0.8,ko;q=0.7,ja;q=0.6",
@@ -35,9 +35,9 @@ class ScraperConfig:
             "X-Requested-With": "XMLHttpRequest",
             },
         metadata={"help": "Request header data used in the browser"}
-    )
+        )
     data_without_trdDd: Dict[str, Optional[str]] = field(
-        default_factory={
+        default_factory=lambda: {
             "bld": "dbms/MDC/STAT/standard/MDCSTAT01501",
             "mktId": "ALL", # KOSPI: "STK", KOSDAQ: "KSQ", KONEX: "KNX"
             "trdDd": None, # format like: "20211029"
@@ -46,9 +46,9 @@ class ScraperConfig:
             "csvxls_isNo": "false",
             },
         metadata={"help": "POST data without trading date field(trdDd)"}
-    )
+        )
     retry_strategy: Dict[int, Union[int, list]] = field(
-        default_factory={
+        default_factory=lambda: {
             "total": 10,
             "status_forcelist": [413, 429, 500, 502, 503, 504],
             "method_whitelist": ["GET", "POST"],
@@ -56,3 +56,5 @@ class ScraperConfig:
             },
         metadata={"help": "Retry strategy arguments"}
     )
+
+    # TODO: 괜히 dataclass 쓰면 쓸데없이 일이 복잡해진다. lambda : deepcopy({...}) 해줘야 함. 
