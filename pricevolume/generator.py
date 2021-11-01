@@ -81,7 +81,7 @@ class CacheGenerator:
             lv1_df = lv1_df.append(df, ignore_index=True)
         
         if is_save:
-            lv1_df.to_pickle(self.path_config.cache_path / f"{self.start_date}_to_{self.end_date}_lv1_df.pkl", )
+            lv1_df.to_pickle(self.path_config.cache_path / f"{mktId}_{self.start_date}_to_{self.end_date}_lv1_df.pkl", )
             # TODO: Create defined path if path directories don't exist
 
         return lv1_df
