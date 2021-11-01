@@ -185,3 +185,7 @@ dart_apikey.txt
 ## sandbox
 sandbox.ipynb
 sandbox.py
+
+## data
+cache/
+*.pkl
