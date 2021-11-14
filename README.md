@@ -1,9 +1,26 @@
 # FinanceDashboard
 
-![Untitled](FinanceDashboard%206b7e583539dd44ada4c1c20f9f949763/Untitled.png)
+FinanceDashboard is an on-going project to make quantitative analysis on Korean stock market easier. 
 
-# Foo bar
+It has main features like: 
 
-## baz jar
+- Scrape KOSPI, KOSDAQ stock universe price-volume data by given period directly from KRX
+- Load KOSPI, KOSDAQ stock universe without survivorship bias (delisted stocks are included)
+- Keep the universe size (500, 1000, 2000, ...) based on trading won-volume (=dollar volume)
+- More coming soon
 
-### cake ham egg
+## Installation
+
+Not yet deployed to pypi. 
+
+Either clone the repository or download the repository to use the package. 
+
+## Getting started
+
+```python
+
+```
+
+## Credit
+
+This project is directly affected by a popular library, `FinanceDataReader` and `marcap`, both of which are from [FinanceData.KR](http://FinanceData.KR) repo.
