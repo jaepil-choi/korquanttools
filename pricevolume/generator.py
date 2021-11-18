@@ -15,6 +15,7 @@ from tqdm import tqdm
 
 ## Custom lib
 from config import PathConfig, ScraperConfig
+from processor import Preprocessor, Lv2Converter
 import utils
 
 class DataFetcher:
@@ -61,26 +62,60 @@ class DataFetcher:
         
 
 class CacheGenerator:
-    def __init__(self, start_date, end_date) -> None:
+    def __init__(self, start_date, end_date, mktId="ALL") -> None:
         self.path_config = PathConfig()
 
         self.start_date = utils.validate_date2str(start_date)
         self.end_date = utils.validate_date2str(end_date)
+        self.mktId = mktId
+
         self.data_fetcher = DataFetcher()
 
-    def fetch_lv1(self, mktId="ALL", is_save=False): # start_date & end_date are inclusive
+        self.lv1_df = None
+        self.lv2_df = None
+
+    def fetch_lv1(self, is_save=False): # start_date & end_date are inclusive
         date_range = pd.date_range(self.start_date, self.end_date)
         date_range = [date.strftime("%Y%m%d") for date in date_range]
 
         # TODO: Fetch data by year and save it to free memory
-        lv1_df = pd.DataFrame()
+        self.lv1_df = pd.DataFrame()
         for trdDd in tqdm(date_range):
-            res, trdDd = self.data_fetcher.get_response(trdDd, mktId)
+            res, trdDd = self.data_fetcher.get_response(trdDd, self.mktId)
             df = self.data_fetcher.parse_response(res, trdDd)
-            lv1_df = lv1_df.append(df, ignore_index=True)
+            self.lv1_df = self.lv1_df.append(df, ignore_index=True)
         
         if is_save:
             self.path_config.cache_path.mkdir(parents=True, exist_ok=True)
-            lv1_df.to_pickle(self.path_config.cache_path / f"{mktId}_{self.start_date}_to_{self.end_date}_lv1_df.pkl", )
+            self.lv1_df.to_pickle(self.path_config.cache_path / f"{self.mktId}_{self.start_date}_to_{self.end_date}_lv1_df.pkl", )
 
-        return lv1_df
+        return self.lv1_df
+    
+    def process_lv1(self, is_save=True):
+        self.lv1_df = Preprocessor.comma_number_2_float(
+            self.lv1_df,
+            columns=self.lv1_df.columns[4:15],
+        )
+        self.lv1_df = Preprocessor.nullstr_2_nan(
+            self.lv1_df,
+            columns=self.lv1_df.columns[4:15],
+            nullstr="-"
+        )
+
+        if is_save:
+            self.path_config.cache_path.mkdir(parents=True, exist_ok=True)
+            self.lv1_df.to_pickle(self.path_config.cache_path / f"{self.mktId}_{self.start_date}_to_{self.end_date}_lv1_df.pkl", )
+    
+    def convert_2_lv2(self, value_column, date_column="trdDd", sid_column="ISU_SRT_CD", is_save=True):
+        self.lv2_df = Lv2Converter.convert_2_lv2(
+            self.lv1_df,
+            date_column=date_column,
+            sid_column=sid_column,
+            value_column=value_column,
+            method="pd_pivot",
+            )
+
+        if is_save:
+            self.path_config.cache_path.mkdir(parents=True, exist_ok=True)
+            self.lv2_df.to_pickle(self.path_config.cache_path / f"{self.mktId}_{self.start_date}_to_{self.end_date}_lv2_df.pkl", )
+
