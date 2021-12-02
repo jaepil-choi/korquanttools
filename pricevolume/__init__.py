@@ -1,1 +1,1 @@
-from financedashboard import pricevolume
+from pricevolume import config, generator, processor

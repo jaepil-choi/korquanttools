@@ -14,9 +14,9 @@ from pathlib import Path
 from tqdm import tqdm
 
 ## Custom lib
-from config import PathConfig, ScraperConfig
-from processor import Preprocessor, Lv2Converter
-import utils
+from pricevolume.config import PathConfig, ScraperConfig
+from pricevolume.processor import Preprocessor, Lv2Converter
+import pricevolume.utils
 
 class DataFetcher:
     def __init__(self) -> None:
