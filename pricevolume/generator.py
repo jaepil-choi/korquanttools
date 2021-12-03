@@ -16,7 +16,7 @@ from tqdm import tqdm
 ## Custom lib
 from pricevolume.config import PathConfig, ScraperConfig
 from pricevolume.processor import Preprocessor, Lv2Converter
-import pricevolume.utils
+from pricevolume.utils import DateUtil
 
 class DataFetcher:
     def __init__(self) -> None:
@@ -44,7 +44,7 @@ class DataFetcher:
         if not isinstance(mktId, str) or mktId.upper() not in ["ALL", "STK", "KSQ", "KNX"]:
             raise Exception("Wrong mktId. Select from ['ALL', 'STK', 'KSQ', 'KNX']")
         
-        trdDd = utils.validate_date2str(trdDd)
+        trdDd = DateUtil.validate_date2str(trdDd)
 
         POST_data = deepcopy(self.POST_data)
         POST_data["trdDd"] = trdDd
@@ -65,8 +65,8 @@ class CacheGenerator:
     def __init__(self, start_date, end_date, mktId="ALL") -> None:
         self.path_config = PathConfig()
 
-        self.start_date = utils.validate_date2str(start_date)
-        self.end_date = utils.validate_date2str(end_date)
+        self.start_date = DateUtil.validate_date2str(start_date)
+        self.end_date = DateUtil.validate_date2str(end_date)
         self.mktId = mktId
 
         self.data_fetcher = DataFetcher()
