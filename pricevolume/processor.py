@@ -26,6 +26,15 @@ class Preprocessor:
         df.loc[:, columns] = df.loc[:, columns].replace(nullstr, value=np.nan)
 
         return df
+    
+    @staticmethod
+    def columns_2_float(df: pd.DataFrame, columns: list, is_copy=True):
+        if is_copy:
+            df = df.copy()
+        
+        df.loc[:, columns] = df.loc[:, columns].astype(float)
+
+        return df
 
 class Lv2Converter:
     @staticmethod
