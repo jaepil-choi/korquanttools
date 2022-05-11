@@ -1,4 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
+
+import numpy as np
 import pandas as pd
 
 class DateUtil:
@@ -39,3 +41,20 @@ class DateUtil:
     def timestamp_2_intDate(timestamp, format="%Y%m%d"):
         date = timestamp.strftime(format=format)
         return int(date)
+    
+    @staticmethod
+    def inclusive_daterange(start_date, end_date, frequency):
+        # TODO: Maybe just use pd.date_range in the future, but the problem is that it's not inclusive.
+        
+        frequencies = ["day", "month", "year"]
+        frequency2dtype = {
+        'day': 'datetime64[D]',
+        'month': 'datetime64[M]',
+        'year': 'datetime64[W]',
+        }
+        assert frequency in frequencies
+
+        date_range = np.arange(start_date, end_date + pd.Timedelta(days=1), dtype="datetime64[D]")
+        date_range = np.unique(date_range.astype(frequency2dtype[frequency]))
+
+        return date_range
