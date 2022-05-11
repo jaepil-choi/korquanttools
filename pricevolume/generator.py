@@ -119,3 +119,64 @@ class CacheGenerator:
             self.path_config.cache_path.mkdir(parents=True, exist_ok=True)
             self.lv2_df.to_pickle(self.path_config.cache_path / f"{self.mktId}_{self.start_date}_to_{self.end_date}_lv2_df.pkl", )
 
+# TODO: Move meta DM classes into separate file. 
+class CacheSaver:
+    frequencies = ['minute', 'hour', 'day', 'week', 'month', 'quarter', 'year']
+    frequency2dtype = { # no quarter
+        'minute': 'datetime64[m]',
+        'hour': 'datetime64[h]',
+        'day': 'datetime64[D]',
+        'week': 'datetime64[W]',
+        'month': 'datetime64[M]',
+        'year': 'datetime64[W]',
+    }
+
+    def __init__(self, DM_name, frequency='day',) -> None:
+        self.DM_name = DM_name
+
+        frequency = frequency.lower()
+        if frequency not in self.frequencies:
+            raise Exception(f"{frequency} not in frequencies list: {self.frequencies}")
+        self.frequency = frequency # currently not being used. 
+        
+        self.df = None
+        self.min_date = None
+        self.max_date = None
+
+        self.path_config = PathConfig()
+
+
+    def load_df(self, df, date_col_name=None):
+        self.df = df
+        
+        if isinstance(df.index, pd.DatetimeIndex):
+            self.min_date = min(df.index)
+            self.max_date = max(df.index)
+        elif date_col_name:
+            self.min_date = min(df.loc[:, date_col_name])
+            self.max_date = max(df.loc[:, date_col_name])
+        
+    def generate_dirs(self, data_list:list, is_lv1=True, frequency="month"):
+
+        # freq_dtype = CacheSaver.frequency2dtype[frequency] # TODO: Dynamically change directory structure based on frequency parameter
+        years = DateUtil.inclusive_daterange(self.min_date, self.max_date, "year")
+        months = DateUtil.inclusive_daterange(self.min_date, self.max_date, "month")
+
+        base_dir = (self.path_config.cache_path / self.DM_name)
+        data_list = ["lv1"] + data_list
+        for data_name in data_list:
+            p = base_dir / data_name
+            
+            for year in years:
+                for month in months:
+                    (p / year / month).mkdir(parents=True, exist_ok=True)
+            
+        return
+    
+    # def save_cache(self):
+    #     group_by_month = 
+        
+        
+
+        
+        
