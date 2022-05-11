@@ -45,12 +45,11 @@ class DateUtil:
     @staticmethod
     def inclusive_daterange(start_date, end_date, frequency):
         # TODO: Maybe just use pd.date_range in the future, but the problem is that it's not inclusive.
-        
         frequencies = ["day", "month", "year"]
         frequency2dtype = {
         'day': 'datetime64[D]',
         'month': 'datetime64[M]',
-        'year': 'datetime64[W]',
+        'year': 'datetime64[Y]',
         }
         assert frequency in frequencies
 
