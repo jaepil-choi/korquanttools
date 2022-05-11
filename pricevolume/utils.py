@@ -57,3 +57,9 @@ class DateUtil:
         date_range = np.unique(date_range.astype(frequency2dtype[frequency]))
 
         return date_range
+
+    @staticmethod
+    def npdate2str(npdate):
+        year, month, date = npdate.astype(str).split('-')
+        
+        return {'year': year, 'month': month, 'date': date}

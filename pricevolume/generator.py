@@ -8,6 +8,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 import re
+import itertools
 from copy import deepcopy
 
 from pathlib import Path
@@ -144,6 +145,7 @@ class CacheSaver:
         self.max_date = None
 
         self.path_config = PathConfig()
+        self.base_dir = (self.path_config.cache_path / self.DM_name)
 
 
     def load_df(self, df, date_col_name=None):
@@ -160,21 +162,39 @@ class CacheSaver:
 
         # freq_dtype = CacheSaver.frequency2dtype[frequency] # TODO: Dynamically change directory structure based on frequency parameter
         years = DateUtil.inclusive_daterange(self.min_date, self.max_date, "year")
+        years = [DateUtil.npdate2str(y)['year'] for y in years]
         months = DateUtil.inclusive_daterange(self.min_date, self.max_date, "month")
+        months = [DateUtil.npdate2str(m)['month'] for m in months]
 
-        base_dir = (self.path_config.cache_path / self.DM_name)
         data_list = ["lv1"] + data_list
         for data_name in data_list:
-            p = base_dir / data_name
+            p = self.base_dir / data_name
             
-            for year in years:
-                for month in months:
-                    (p / year / month).mkdir(parents=True, exist_ok=True)
+            for year, month in itertools.product(years, months):
+                (p / year / month).mkdir(parents=True, exist_ok=True)
             
         return
     
-    # def save_cache(self):
-    #     group_by_month = 
+    def save_cache(self, data_name):
+        group_by_month = self.df.groupby(pd.Grouper(key=None, freq="M")) # key=None means index
+        group_by_month = [g for _, g in group_by_month]
+
+        years = DateUtil.inclusive_daterange(self.min_date, self.max_date, "year")
+        years = [DateUtil.npdate2str(y)['year'] for y in years]
+        months = DateUtil.inclusive_daterange(self.min_date, self.max_date, "month")
+        months = [DateUtil.npdate2str(m)['month'] for m in months]
+
+        p = self.base_dir / data_name
+        for (year, month), df in zip(itertools.product(years, months), group_by_month):
+            min_date = min(df.index).date()
+            max_date = max(df.index).date()
+            
+            save_path = p / year / month
+            filename = f"{min_date}_{max_date}.pkl"
+
+            df.to_pickle(save_path / filename)
+
+                
         
         
 
