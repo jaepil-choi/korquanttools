@@ -64,6 +64,8 @@ class DataFetcher:
 
 class CacheGenerator:
     def __init__(self, start_date, end_date, mktId="ALL") -> None:
+        self.DM_name = "KRX_pricevolume"
+
         self.path_config = PathConfig()
 
         self.start_date = DateUtil.validate_date2str(start_date)
@@ -85,10 +87,6 @@ class CacheGenerator:
             res, trdDd = self.data_fetcher.get_response(trdDd, self.mktId)
             df = self.data_fetcher.parse_response(res, trdDd)
             self.lv1_df = self.lv1_df.append(df, ignore_index=True)
-        
-        if is_save:
-            self.path_config.cache_path.mkdir(parents=True, exist_ok=True)
-            self.lv1_df.to_pickle(self.path_config.cache_path / f"{self.mktId}_{self.start_date}_to_{self.end_date}_lv1_df.pkl", )
 
         return self.lv1_df
     
@@ -102,10 +100,6 @@ class CacheGenerator:
             columns=self.lv1_df.columns[4:15],
             nullstr="-"
         )
-
-        if is_save:
-            self.path_config.cache_path.mkdir(parents=True, exist_ok=True)
-            self.lv1_df.to_pickle(self.path_config.cache_path / f"{self.mktId}_{self.start_date}_to_{self.end_date}_lv1_df.pkl", )
     
     def convert_2_lv2(self, value_column, date_column="trdDd", sid_column="ISU_SRT_CD", is_save=True):
         self.lv2_df = Lv2Converter.convert_2_lv2(
@@ -116,9 +110,6 @@ class CacheGenerator:
             method="pd_pivot",
             )
 
-        if is_save:
-            self.path_config.cache_path.mkdir(parents=True, exist_ok=True)
-            self.lv2_df.to_pickle(self.path_config.cache_path / f"{self.mktId}_{self.start_date}_to_{self.end_date}_lv2_df.pkl", )
 
 # TODO: Move meta DM classes into separate file. 
 class CacheSaver:
@@ -148,15 +139,32 @@ class CacheSaver:
         self.base_dir = (self.path_config.cache_path / self.DM_name)
 
 
-    def load_df(self, df, date_col_name=None):
-        self.df = df
+    def load_df(self, df, datetime_format, date_col_name=None):
+        self.df = df # NOT deepcopying the given df. Changes will affect the original df. 
         
-        if isinstance(df.index, pd.DatetimeIndex):
-            self.min_date = min(df.index)
-            self.max_date = max(df.index)
-        elif date_col_name:
-            self.min_date = min(df.loc[:, date_col_name])
-            self.max_date = max(df.loc[:, date_col_name])
+        if isinstance(self.df.index, pd.DatetimeIndex):
+            self.min_date = min(self.df.index)
+            self.max_date = max(self.df.index)
+            
+            return 
+
+        try:
+            if date_col_name:
+                self.df.loc[:, date_col_name] = pd.to_datetime(self.df[date_col_name], format=datetime_format)
+                self.min_date = min(df.loc[:, date_col_name])
+                self.max_date = max(df.loc[:, date_col_name])
+            else: # index is date
+                self.index = pd.to_datetime(self.df.index, format=datetime_format)
+                self.min_date = min(df.index)
+                self.max_date = max(df.index)
+
+            return
+
+        except:
+            if date_col_name:
+                raise Exception(f"Cannot convert data to datetime format from column: {date_col_name}")
+            else:
+                raise Exception(f"Cannot convert data to datetime format from index column")
         
     def generate_dirs(self, data_list:list, is_lv1=True, frequency="month"):
 
@@ -166,7 +174,9 @@ class CacheSaver:
         months = DateUtil.inclusive_daterange(self.min_date, self.max_date, "month")
         months = [DateUtil.npdate2str(m)['month'] for m in months]
 
-        data_list = ["lv1"] + data_list
+        if is_lv1:
+            data_list = ["lv1"] + data_list
+
         for data_name in data_list:
             p = self.base_dir / data_name
             
