@@ -70,6 +70,10 @@ class CacheGenerator:
 
         self.start_date = DateUtil.validate_date2str(start_date)
         self.end_date = DateUtil.validate_date2str(end_date)
+        today = DateUtil.validate_date2str(pd.Timestamp.today())
+        if self.end_date > today:
+            self.end_date = today
+
         self.mktId = mktId
 
         self.data_fetcher = DataFetcher()
@@ -77,7 +81,7 @@ class CacheGenerator:
         self.lv1_df = None
         self.lv2_df = None
 
-    def fetch_lv1(self, is_save=False): # start_date & end_date are inclusive
+    def fetch_lv1(self): # start_date & end_date are inclusive
         date_range = pd.date_range(self.start_date, self.end_date)
         date_range = [date.strftime("%Y%m%d") for date in date_range]
 
@@ -90,7 +94,7 @@ class CacheGenerator:
 
         return self.lv1_df
     
-    def process_lv1(self, is_save=True):
+    def process_lv1(self):
         self.lv1_df = Preprocessor.comma_number_2_float(
             self.lv1_df,
             columns=self.lv1_df.columns[4:15],
@@ -101,7 +105,7 @@ class CacheGenerator:
             nullstr="-"
         )
     
-    def convert_2_lv2(self, value_column, date_column="trdDd", sid_column="ISU_SRT_CD", is_save=True):
+    def convert_2_lv2(self, value_column, date_column="trdDd", sid_column="ISU_SRT_CD"):
         self.lv2_df = Lv2Converter.convert_2_lv2(
             self.lv1_df,
             date_column=date_column,
@@ -185,24 +189,45 @@ class CacheSaver:
             
         return
     
-    def save_cache(self, data_name):
-        group_by_month = self.df.groupby(pd.Grouper(key=None, freq="M")) # key=None means index
-        group_by_month = [g for _, g in group_by_month]
+    def save_cache(self, data_name, lv1_key=None):
+        # TODO: lv1 / non-lv1 is bad implementation. Make it DRY. 
+        if data_name == "lv1":
+            group_by_month = self.df.groupby(pd.Grouper(key=lv1_key, freq="M")) # key=None means index
+            group_by_month = [g for _, g in group_by_month]
 
-        years = DateUtil.inclusive_daterange(self.min_date, self.max_date, "year")
-        years = [DateUtil.npdate2str(y)['year'] for y in years]
-        months = DateUtil.inclusive_daterange(self.min_date, self.max_date, "month")
-        months = [DateUtil.npdate2str(m)['month'] for m in months]
+            years = DateUtil.inclusive_daterange(self.min_date, self.max_date, "year")
+            years = [DateUtil.npdate2str(y)['year'] for y in years]
+            months = DateUtil.inclusive_daterange(self.min_date, self.max_date, "month")
+            months = [DateUtil.npdate2str(m)['month'] for m in months]
 
-        p = self.base_dir / data_name
-        for (year, month), df in zip(itertools.product(years, months), group_by_month):
-            min_date = min(df.index).date()
-            max_date = max(df.index).date()
-            
-            save_path = p / year / month
-            filename = f"{min_date}_{max_date}.pkl"
+            p = self.base_dir / data_name
+            for (year, month), df in zip(itertools.product(years, months), group_by_month):
+                min_date = min(df[lv1_key].index).date()
+                max_date = max(df[lv1_key].index).date()
+                
+                save_path = p / year / month
+                filename = f"{min_date}_{max_date}.pkl"
 
-            df.to_pickle(save_path / filename)
+                df.to_pickle(save_path / filename)
+
+        else:
+            group_by_month = self.df.groupby(pd.Grouper(key=None, freq="M")) # key=None means index
+            group_by_month = [g for _, g in group_by_month]
+
+            years = DateUtil.inclusive_daterange(self.min_date, self.max_date, "year")
+            years = [DateUtil.npdate2str(y)['year'] for y in years]
+            months = DateUtil.inclusive_daterange(self.min_date, self.max_date, "month")
+            months = [DateUtil.npdate2str(m)['month'] for m in months]
+
+            p = self.base_dir / data_name
+            for (year, month), df in zip(itertools.product(years, months), group_by_month):
+                min_date = min(df.index).date()
+                max_date = max(df.index).date()
+                
+                save_path = p / year / month
+                filename = f"{min_date}_{max_date}.pkl"
+
+                df.to_pickle(save_path / filename)
 
                 
         

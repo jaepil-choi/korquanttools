@@ -10,6 +10,8 @@ from abc import ABC, abstractmethod
 from pricevolume.config import PathConfig
 from pricevolume.utils import DateUtil
 
+from pricevolume.generator import CacheGenerator, CacheSaver
+
 class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate BaseDM to other framework module
     @property
     @abstractmethod
@@ -40,6 +42,11 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
     @abstractmethod
     def data_list(self):
         raise NotImplementedError
+
+    @abstractmethod
+    def generate_data(self):
+        raise NotImplementedError
+
     def check_cache_exist(self, date): # TODO: Make better after building tradingday DM
         year = str(date.year)
         month = f'{date.month:02}'
@@ -84,7 +91,7 @@ class DM(BaseDM):
     description = "Basic price-volume data imported from KRX website & NAVER finance. Has KOSPI, KOSDAQ, KONEX stocks."
     birthday = 20211203
     min_date = 19990101
-    data_list = ["open", "high", "low", "close", "adj_close", "return", "volume", "market_cap"]
+    data_list = ["open", "high", "low", "close", "adj_close", "return", "volume", "dollarvolume", "marketcap"]
 
     load_path = PathConfig.cache_path / name
 
@@ -102,8 +109,29 @@ class DM(BaseDM):
         if DM.min_date > start:
             raise ValueError(f"Start date({start}) earlier than min date({DM._min_date})")
         
+    def generate_data(self, start_date, end_date):
+        cg = CacheGenerator(start_date, end_date, mktId="ALL")
+        cs = CacheSaver(self.name, frequency="day")
+
+        data_col_mapping = {
+            "open": "TDD_OPNPRC",
+            "high": "TDD_HGPRC",
+            "low": "TDD_LWPRC",
+            "close": "TDD_CLSPRC",
+            "volume": "ACC_TRDVOL",
+            "dollarvolume": "ACC_TRDVAL",
+            "marketcap": "MKTCAP",
+        }
+
+        cg.fetch_lv1()
+        cg.process_lv1()
+        cs.load_df(cg.lv1_df, "%Y%m%d", date_col_name="trdDd")
+        cs.generate_dirs(self.data_list, is_lv1=True, frequency="month")
+        cs.save_cache("lv1", lv1_key="trdDd")
         
-        # TODO: 현재는 lv1 을 불러와서 여기서 바꾸는데 절대 그러면 안된다. lv2 cache를 생성해서 그걸 불러올 수 있어야 함. 
+        for data_name, col_name in data_col_mapping.items():
+            cg.convert_2_lv2(col_name)
+            cs.save_cache(data_name)
         
     def get_data(self, data_name):
         pass
