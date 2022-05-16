@@ -60,6 +60,7 @@ class DateUtil:
 
     @staticmethod
     def npdate2str(npdate):
+        npdate = npdate.astype("datetime64[D]")
         year, month, date = npdate.astype(str).split('-')
         
         return {'year': year, 'month': month, 'date': date}
