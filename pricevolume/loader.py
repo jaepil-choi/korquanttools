@@ -1,3 +1,4 @@
+# from sqlite3 import Date 
 import pandas as pd
 import numpy as np
 
@@ -47,6 +48,42 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
     def generate_data(self):
         raise NotImplementedError
 
+    def get_data(self, data_name, level=2):
+        assert data_name in DM.data_list
+        assert level in [1, 2]
+
+        start = DateUtil.intDate_2_timestamp(self.start)
+        end = DateUtil.intDate_2_timestamp(self.end)
+        today = pd.Timestamp.today()
+
+        if end >= today:
+            end = today
+
+        inclusive_date_range = DateUtil.inclusive_daterange(start, end, "month")
+        inclusive_date_range = inclusive_date_range.astype("datetime64[D]")
+        # TODO: 없는 데이터 generate 하며 on-demand로 get_data 해오기 
+        # 월별로 데이터 cache 있는지 확인해서 붙이다가, 
+        # 없으면 - last 월이 아닌 이상 그 월 start, end 해서 cache generation 
+        # 해야하는 기간 목록 쭉 모으고 while 그 목록이 비어있지 않는 한, cache generation 해서 없는 부분 채움. 
+        
+        df = pd.DataFrame()
+
+        for date in inclusive_date_range: # yyyy-mm-01
+            year = DateUtil.npdate2str(date)['year']
+            month = DateUtil.npdate2str(date)['month']
+            p = self.load_path / year / month
+
+            if self.check_cache_exist(date):
+                f = list(p.glob('*.pkl'))[0]
+                monthly_df = pd.read_pickle(p / f)
+                df = df.append(monthly_df, ignore_index=True)
+            else:
+                self.generate_data(start, end)
+
+                f = list(p.glob('*.pkl'))[0]
+                monthly_df = pd.read_pickle(p / f)
+                df = df.append(monthly_df, ignore_index=True)
+        
     def check_cache_exist(self, date): # TODO: Make better after building tradingday DM
         year = str(date.year)
         month = f'{date.month:02}'
@@ -108,7 +145,7 @@ class DM(BaseDM):
 
         if DM.min_date > start:
             raise ValueError(f"Start date({start}) earlier than min date({DM._min_date})")
-        
+    
     def generate_data(self, start_date, end_date):
         cg = CacheGenerator(start_date, end_date, mktId="ALL")
         cs = CacheSaver(self.name, frequency="day")
@@ -128,10 +165,13 @@ class DM(BaseDM):
         cs.load_df(cg.lv1_df, "%Y%m%d", date_col_name="trdDd")
         cs.generate_dirs(self.data_list, is_lv1=True, frequency="month")
         cs.save_cache("lv1", lv1_key="trdDd")
-        
+
         for data_name, col_name in data_col_mapping.items():
             cg.convert_2_lv2(col_name)
             cs.save_cache(data_name)
-        
-    def get_data(self, data_name):
-        pass
+
+# class ModuleSelector: 
+#     pass
+    # def load_DM(self, start, end, DM_name, load_path=None):
+    #     if load_path is not None:
+    #         load_path = self.load_path
