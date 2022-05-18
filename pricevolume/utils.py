@@ -3,19 +3,41 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 import pandas as pd
 
+import datetime
+
 class DateUtil:
     @staticmethod
     def validate_date(yyyymmdd: Union[str, int], start="19900101", end="21000101") -> bool:
-        if not isinstance(yyyymmdd, [str, int]):
-            return False
-        
+        """Check wheter the given input has valid date format & value regardless of type
+
+        Args:
+            yyyymmdd (Union[str, int]): date format in yyyymmdd, i.e: %Y%m%d
+            start (str, optional): Start date of sanity check. Defaults to "19900101".
+            end (str, optional): End date of sanity check. Defaults to "21000101".
+
+        Returns:
+            bool: True if the input has a valid date format & value. 
+        """        
+
         start_date = pd.to_datetime(start)
         end_date = pd.to_datetime(end)
 
-        try:
-            date = pd.to_datetime(yyyymmdd)
-            return (start_date < date < end_date)
-        except:
+        if isinstance(yyyymmdd, (str, int)):
+            date = str(yyyymmdd)
+
+            try:
+                date = pd.to_datetime(yyyymmdd)
+                return (start_date < date < end_date)
+            except:
+                return False
+        
+        if isinstance(yyyymmdd, datetime.datetime) or isinstance(yyyymmdd, np.datetime64):
+            try:
+                date = pd.to_datetime(yyyymmdd)
+                return (start_date < date < end_date)
+            except:
+                return False
+        else:
             return False
 
     @staticmethod
@@ -23,14 +45,14 @@ class DateUtil:
         if DateUtil.validate_date(yyyymmdd):
             return str(yyyymmdd)
         else:
-            raise Exception("Date validation failed")
+            raise Exception(f"Date validation failed. Given: yyyymmdd = {yyyymmdd}")
 
     @staticmethod
     def validate_date2int(yyyymmdd: Union[str, int]) -> int:
         if DateUtil.validate_date(yyyymmdd):
             return int(yyyymmdd)
         else:
-            raise Exception("Date validation failed")
+            raise Exception(f"Date validation failed. Given: yyyymmdd = {yyyymmdd}")
     
     @staticmethod
     def intDate_2_timestamp(yyyymmdd: int):
