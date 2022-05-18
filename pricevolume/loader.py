@@ -85,6 +85,8 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
                 df = df.append(monthly_df, ignore_index=True)
         
     def check_cache_exist(self, date): # TODO: Make better after building tradingday DM
+        date = pd.to_datetime(date)
+        
         year = str(date.year)
         month = f'{date.month:02}'
         
@@ -100,9 +102,11 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
         else:
             raise Exception(f"Unknown Error. Check f = {f}")
         
-        
-        day1_re = re.compile('\d{4}-\d{2}-01_\d{4}-\d{2}-\d{2}')
-        is_startfromday1 = True if re.match(day1_re, f.stem) else False
+        if is_exist:
+            day1_re = re.compile('\d{4}-\d{2}-01_\d{4}-\d{2}-\d{2}')
+            is_startfromday1 = True if re.match(day1_re, f[0].stem) else False
+        else:
+            is_startfromday1 = False
 
         if is_exist and is_startfromday1:
             return True
