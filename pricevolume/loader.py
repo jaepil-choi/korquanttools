@@ -71,26 +71,28 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
         for date in inclusive_date_range: # yyyy-mm-01
             year = DateUtil.npdate2str(date)['year']
             month = DateUtil.npdate2str(date)['month']
-            p = self.load_path / year / month
+            p = self.load_path / data_name / year / month
 
-            if self.check_cache_exist(date):
+            if self.check_cache_exist(data_name, date):
                 f = list(p.glob('*.pkl'))[0]
                 monthly_df = pd.read_pickle(p / f)
-                df = df.append(monthly_df, ignore_index=True)
+                df = df.append(monthly_df, ignore_index=False)
             else:
                 self.generate_data(start, end)
 
                 f = list(p.glob('*.pkl'))[0]
                 monthly_df = pd.read_pickle(p / f)
-                df = df.append(monthly_df, ignore_index=True)
+                df = df.append(monthly_df, ignore_index=False)
         
-    def check_cache_exist(self, date): # TODO: Make better after building tradingday DM
+        return df
+        
+    def check_cache_exist(self, data_name, date): # TODO: Make better after building tradingday DM
         date = pd.to_datetime(date)
         
         year = str(date.year)
         month = f'{date.month:02}'
         
-        p = self.load_path / year / month
+        p = self.load_path / data_name / year / month
         f = list(p.glob('*.pkl')) # -> list
 
         if f == []:
@@ -172,6 +174,7 @@ class DM(BaseDM):
 
         for data_name, col_name in data_col_mapping.items():
             cg.convert_2_lv2(col_name)
+            cs.load_df(cg.lv2_df, "%Y%m%d", date_col_name=None)
             cs.save_cache(data_name)
 
 # class ModuleSelector: 

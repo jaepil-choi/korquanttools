@@ -202,8 +202,8 @@ class CacheSaver:
 
             p = self.base_dir / data_name
             for (year, month), df in zip(itertools.product(years, months), group_by_month):
-                min_date = min(df[lv1_key].index).date()
-                max_date = max(df[lv1_key].index).date()
+                min_date = min(df[lv1_key]).date()
+                max_date = max(df[lv1_key]).date()
                 
                 save_path = p / year / month
                 filename = f"{min_date}_{max_date}.pkl"
