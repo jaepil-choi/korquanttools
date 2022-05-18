@@ -60,7 +60,7 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
             end = today
 
         inclusive_date_range = DateUtil.inclusive_daterange(start, end, "month")
-        inclusive_date_range = inclusive_date_range.astype("datetime64[D]")
+        inclusive_date_range = inclusive_date_range.astype("datetime64[D]") # yyyy-mm-01
         # TODO: 없는 데이터 generate 하며 on-demand로 get_data 해오기 
         # 월별로 데이터 cache 있는지 확인해서 붙이다가, 
         # 없으면 - last 월이 아닌 이상 그 월 start, end 해서 cache generation 
@@ -68,9 +68,16 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
         
         df = pd.DataFrame()
 
-        for date in inclusive_date_range: # yyyy-mm-01
+        for date in inclusive_date_range:
             year = DateUtil.npdate2str(date)['year']
             month = DateUtil.npdate2str(date)['month']
+            
+            month_start = pd.to_datetime(date)
+            month_end = pd.to_datetime(date) + pd.tseries.offsets.MonthEnd(1)
+            today = pd.Timestamp.today()
+            if month_end > today:
+                month_end = today
+
             p = self.load_path / data_name / year / month
 
             if self.check_cache_exist(data_name, date):
@@ -78,7 +85,7 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
                 monthly_df = pd.read_pickle(p / f)
                 df = df.append(monthly_df, ignore_index=False)
             else:
-                self.generate_data(start, end)
+                self.generate_data(month_start, month_end)
 
                 f = list(p.glob('*.pkl'))[0]
                 monthly_df = pd.read_pickle(p / f)
