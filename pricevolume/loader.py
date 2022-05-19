@@ -49,7 +49,7 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
         raise NotImplementedError
 
     def get_data(self, data_name, level=2):
-        assert data_name in DM.data_list
+        assert data_name in self.data_list
         assert level in [1, 2]
 
         start = DateUtil.intDate_2_timestamp(self.start)
@@ -136,7 +136,7 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
         return
         
 
-class DM(BaseDM):
+class KRXPriceDM(BaseDM):
     name = "KRX_pricevolume"
     description = "Basic price-volume data imported from KRX website & NAVER finance. Has KOSPI, KOSDAQ, KONEX stocks."
     birthday = 20211203
@@ -156,8 +156,8 @@ class DM(BaseDM):
             is_tradingday = False # Temporarily set to False
             # self.date_list = ... # TODO: Download data first and then filter. 
 
-        if DM.min_date > start:
-            raise ValueError(f"Start date({start}) earlier than min date({DM._min_date})")
+        if self.min_date > start:
+            raise ValueError(f"Start date({start}) earlier than min date({self._min_date})")
     
     def generate_data(self, start_date, end_date):
         cg = CacheGenerator(start_date, end_date, mktId="ALL")
@@ -185,6 +185,7 @@ class DM(BaseDM):
             cs.save_cache(data_name)
 
 # class ModuleSelector: 
+# TODO: Make DM submission and retrieval happen in ModuleSelector. Class dump to DB should be preceded. 
 #     pass
     # def load_DM(self, start, end, DM_name, load_path=None):
     #     if load_path is not None:
