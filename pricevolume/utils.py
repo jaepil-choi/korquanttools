@@ -86,3 +86,8 @@ class DateUtil:
         year, month, date = npdate.astype(str).split('-')
         
         return {'year': year, 'month': month, 'date': date}
+    
+    @staticmethod
+    def numdate2stddate(numdate):
+        numdate = str(numdate)
+        return numdate[:4] + '-' + numdate[4:6] + '-' + numdate[6:]
