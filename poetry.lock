@@ -1240,6 +1240,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "squarify"
+version = "0.4.3"
+description = "Pure Python implementation of the squarify treemap layout algorithm"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "streamlit"
 version = "1.9.0"
 description = "The fastest way to build data apps in Python"
@@ -1501,7 +1509,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3bca096c96ded53c09b42f80d97ce81703815013f96dd4437e666579b81a348b"
+content-hash = "cb6165fb6ec4a2df5cb2b2d3786b84528bfa90033f5e2b5fa6eea67626e91745"
 
 [metadata.files]
 altair = [
@@ -2374,6 +2382,10 @@ sniffio = [
 soupsieve = [
     {file = "soupsieve-2.2.1-py3-none-any.whl", hash = "sha256:c2c1c2d44f158cdbddab7824a9af8c4f83c76b1e23e049479aa432feb6c4c23b"},
     {file = "soupsieve-2.2.1.tar.gz", hash = "sha256:052774848f448cf19c7e959adf5566904d525f33a3f8b6ba6f6f8f26ec7de0cc"},
+]
+squarify = [
+    {file = "squarify-0.4.3-py3-none-any.whl", hash = "sha256:bec7011e0c7f4103fe57a1c16a7c091d9dc1be0f23d774e1c568b748a6f818f6"},
+    {file = "squarify-0.4.3.tar.gz", hash = "sha256:54091f6ad175f7f201f8934574e647ce1b50dedc478c5fd968688eb7d7469f95"},
 ]
 streamlit = [
     {file = "streamlit-1.9.0-py2.py3-none-any.whl", hash = "sha256:dd7718147cfc8eb4c5a18b36b67a36de37454e7fe49ac72470ad2a43771aef13"},
