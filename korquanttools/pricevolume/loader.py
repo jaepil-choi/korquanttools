@@ -1,4 +1,5 @@
 # from sqlite3 import Date 
+from sqlite3 import Date
 import pandas as pd
 import numpy as np
 
@@ -91,6 +92,8 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
                 monthly_df = pd.read_pickle(p / f)
                 df = df.append(monthly_df, ignore_index=False)
         
+        df = df.loc[start:end, :]
+
         return df
         
     def check_cache_exist(self, data_name, date): # TODO: Make better after building tradingday DM
