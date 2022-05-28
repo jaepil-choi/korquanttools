@@ -15,7 +15,7 @@
 
 - Scrape KOSPI, KOSDAQ stock universe price-volume data by given period directly from KRX
 - Load KOSPI, KOSDAQ stock universe without survivorship bias (delisted stocks are included)
-- Keep the universe size (500, 1000, 2000, ...) based on trading won-volume (=dollar volume)
+- Cache the downloaded data for faster access later on.
 - More coming soon
 
 # Installation
@@ -27,6 +27,23 @@ Either clone the repository or download the repository to use the package.
 # Quickstart
 
 ```python
+
+# Import data library
+from korquanttools.pricevolume.loader import KRXPriceDM
+
+# Set start date and end date 
+START = 20140101
+END = 20220520
+
+# Make a data instance
+pricevolume = KRXPriceDM(START, END)
+
+# See available data and data module information
+pricevolume.get_info()
+
+# Download and load the data you want.
+close_df = pricevolume.get_data("close")
+close_df
 
 ```
 
