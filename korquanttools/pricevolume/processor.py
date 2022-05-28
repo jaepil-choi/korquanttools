@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 ## Custom lib
-from financedashboard.pricevolume.config import PathConfig
+from korquanttools.pricevolume.config import PathConfig
 
 class Preprocessor:
     @staticmethod

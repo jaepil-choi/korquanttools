@@ -9,7 +9,7 @@
                                                                                                                                                           
 # Project description                                                                                                                                                          
 
-`FinanceDashboard` is an on-going project to make quantitative analysis on Korean stock market easier. 
+`korquanttools` is an on-going project to make quantitative analysis on Korean stock market easier. 
 
 # Features
 

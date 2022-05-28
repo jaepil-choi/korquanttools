@@ -1,4 +1,4 @@
-from financedashboard import __version__
+from korquanttools import __version__
 
 
 def test_version():

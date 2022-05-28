@@ -8,10 +8,10 @@ import re
 from abc import ABC, abstractmethod
 
 ## Custom lib
-from financedashboard.pricevolume.config import PathConfig
-from financedashboard.pricevolume.utils import DateUtil
+from korquanttools.pricevolume.config import PathConfig
+from korquanttools.pricevolume.utils import DateUtil
 
-from financedashboard.pricevolume.generator import CacheGenerator, CacheSaver
+from korquanttools.pricevolume.generator import CacheGenerator, CacheSaver
 
 class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate BaseDM to other framework module
     @property

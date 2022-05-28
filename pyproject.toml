@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "financedashboard"
+name = "korquanttools"
 version = "0.1.0"
 description = ""
 authors = ["jaepil-choi <chljeffreyz@gmail.com>"]
