@@ -141,7 +141,7 @@ class KRXPriceDM(BaseDM):
     description = "Basic price-volume data imported from KRX website & NAVER finance. Has KOSPI, KOSDAQ, KONEX stocks."
     birthday = 20211203
     min_date = 19990101
-    data_list = ["lv1", "open", "high", "low", "close", "adj_close", "return", "volume", "dollarvolume", "marketcap"]
+    data_list = ["lv1", "open", "high", "low", "close", "volume", "dollarvolume", "marketcap"] # excluded adj.close and return
 
     load_path = PathConfig.cache_path / name
 
