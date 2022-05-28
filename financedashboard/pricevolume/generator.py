@@ -15,9 +15,9 @@ from pathlib import Path
 from tqdm import tqdm
 
 ## Custom lib
-from pricevolume.config import PathConfig, ScraperConfig
-from pricevolume.processor import Preprocessor, Lv2Converter
-from pricevolume.utils import DateUtil
+from financedashboard.pricevolume.config import PathConfig, ScraperConfig
+from financedashboard.pricevolume.processor import Preprocessor, Lv2Converter
+from financedashboard.pricevolume.utils import DateUtil
 
 class DataFetcher:
     def __init__(self) -> None:

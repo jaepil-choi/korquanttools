@@ -8,10 +8,10 @@ import re
 from abc import ABC, abstractmethod
 
 ## Custom lib
-from pricevolume.config import PathConfig
-from pricevolume.utils import DateUtil
+from financedashboard.pricevolume.config import PathConfig
+from financedashboard.pricevolume.utils import DateUtil
 
-from pricevolume.generator import CacheGenerator, CacheSaver
+from financedashboard.pricevolume.generator import CacheGenerator, CacheSaver
 
 class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate BaseDM to other framework module
     @property

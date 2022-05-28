@@ -5,8 +5,7 @@ import pandas as pd
 import numpy as np
 
 ## Custom lib
-from pricevolume.config import PathConfig
-import pricevolume.utils
+from financedashboard.pricevolume.config import PathConfig
 
 class Preprocessor:
     @staticmethod
