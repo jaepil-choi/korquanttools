@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 from pathlib import Path
 import sys
 
-BASE_PATH = Path(__file__).parent.resolve() # pricevolume/
+BASE_PATH = Path(__file__).parent.resolve() # korquanttools/pricevolume/
 
 @dataclass
 class PathConfig:
