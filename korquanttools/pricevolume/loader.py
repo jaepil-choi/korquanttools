@@ -49,9 +49,13 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
     def generate_data(self):
         raise NotImplementedError
 
-    def get_data(self, data_name, level=2):
+    def get_data(self, data_name):
         assert data_name in self.data_list
-        assert level in [1, 2]
+        
+        if data_name == 'lv1':
+            level = 1
+        else:
+            level = 2
 
         start = DateUtil.intDate_2_timestamp(self.start)
         end = DateUtil.intDate_2_timestamp(self.end)
@@ -92,7 +96,12 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
                 monthly_df = pd.read_pickle(p / f)
                 df = df.append(monthly_df, ignore_index=False)
         
-        df = df.loc[start:end, :]
+        if level == 1:
+            df.reset_index(drop=True, inplace=True)
+            df.loc['trdDd', :] = pd.to_datetime(df['trdDd'])
+            df = df[(start < df['trdDd']) & (df['trdDd'] < end)]
+        else:
+            df = df.loc[start:end, :]
 
         return df
         
