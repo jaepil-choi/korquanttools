@@ -88,13 +88,13 @@ class BaseDM(ABC): # TODO: Make BaseDM include all other metadata / separate Bas
             if self.check_cache_exist(data_name, date):
                 f = list(p.glob('*.pkl'))[0]
                 monthly_df = pd.read_pickle(p / f)
-                df = df.append(monthly_df, ignore_index=False)
+                df = pd.concat([df, monthly_df], ignore_index=False)
             else:
                 self.generate_data(month_start, month_end)
 
                 f = list(p.glob('*.pkl'))[0]
                 monthly_df = pd.read_pickle(p / f)
-                df = df.append(monthly_df, ignore_index=False)
+                df = pd.concat([df, monthly_df], ignore_index=False)
         
         if level == 1:
             df.reset_index(drop=True, inplace=True)
