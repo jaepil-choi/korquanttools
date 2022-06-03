@@ -189,3 +189,4 @@ sandbox.py
 ## data
 cache/
 *.pkl
+*.pickle
