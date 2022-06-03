@@ -51,7 +51,7 @@ class ScraperConfig:
         default_factory=lambda: {
             "total": 10,
             "status_forcelist": [413, 429, 500, 502, 503, 504],
-            "method_whitelist": ["GET", "POST"],
+            "allowed_methods": ["GET", "POST"],
             "backoff_factor": 2,
             },
         metadata={"help": "Retry strategy arguments"}
