@@ -6,7 +6,8 @@
                 /_/                                        
                                                                                                       
 ```                                                                                                                                                       
-                                                                                                                                                          
+                                                                                                                                  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)                        
+
 # Project description                                                                                                                                                          
 
 `korquanttools` is an on-going project to make quantitative analysis on Korean stock market easier. 
@@ -56,3 +57,5 @@ close_df
 This project is directly affected by a popular library, `FinanceDataReader` and `marcap`, both of which are from [FinanceData.KR](http://FinanceData.KR) repo.
 
 # License
+
+The MIT License (MIT)
