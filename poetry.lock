@@ -404,6 +404,29 @@ docs = ["sphinx", "jaraco.packaging (>=9)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.0.1)", "pytest-black (>=0.3.7)", "pytest-mypy (>=0.9.1)"]
 
 [[package]]
+name = "investpy"
+version = "1.0.8"
+description = "Financial Data Extraction from Investing.com with Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+lxml = ">=4.4.1"
+numpy = [
+    ">=1.17.2",
+    ">=1.21.2",
+]
+pandas = ">=0.25.1"
+pytz = ">=2019.3"
+requests = ">=2.22.0"
+Unidecode = ">=1.1.1"
+
+[package.extras]
+docs = ["sphinx (==3.4.3)", "recommonmark (==0.7.1)", "furo (==2021.4.11b34)", "investpy (==1.0.8)"]
+tests = ["pytest (==6.2.5)"]
+
+[[package]]
 name = "ipykernel"
 version = "6.13.0"
 description = "IPython Kernel for Jupyter"
@@ -1617,6 +1640,14 @@ devenv = ["black", "pyroma", "pytest-cov", "zest.releaser"]
 test = ["pytest-mock (>=3.3)", "pytest (>=4.3)"]
 
 [[package]]
+name = "unidecode"
+version = "1.3.4"
+description = "ASCII transliterations of Unicode text"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "urllib3"
 version = "1.26.9"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -1724,7 +1755,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "cb6165fb6ec4a2df5cb2b2d3786b84528bfa90033f5e2b5fa6eea67626e91745"
+content-hash = "f981973fab2a6eeb3f3cfd764341deecc0b6d5f1e45cd23e9b68306134134d84"
 
 [metadata.files]
 altair = [
@@ -1961,6 +1992,9 @@ importlib-metadata = [
 importlib-resources = [
     {file = "importlib_resources-5.7.1-py3-none-any.whl", hash = "sha256:e447dc01619b1e951286f3929be820029d48c75eb25d265c28b92a16548212b8"},
     {file = "importlib_resources-5.7.1.tar.gz", hash = "sha256:b6062987dfc51f0fcb809187cffbd60f35df7acb4589091f154214af6d0d49d3"},
+]
+investpy = [
+    {file = "investpy-1.0.8.tar.gz", hash = "sha256:6a7632a94b484ee07cd54afd416bdc759cd905ba60c62dbb8a8d157229b267c6"},
 ]
 ipykernel = [
     {file = "ipykernel-6.13.0-py3-none-any.whl", hash = "sha256:2b0987af43c0d4b62cecb13c592755f599f96f29aafe36c01731aaa96df30d39"},
@@ -2815,6 +2849,10 @@ tzdata = [
 tzlocal = [
     {file = "tzlocal-4.2-py3-none-any.whl", hash = "sha256:89885494684c929d9191c57aa27502afc87a579be5cdd3225c77c463ea043745"},
     {file = "tzlocal-4.2.tar.gz", hash = "sha256:ee5842fa3a795f023514ac2d801c4a81d1743bbe642e3940143326b3a00addd7"},
+]
+unidecode = [
+    {file = "Unidecode-1.3.4-py3-none-any.whl", hash = "sha256:afa04efcdd818a93237574791be9b2817d7077c25a068b00f8cff7baa4e59257"},
+    {file = "Unidecode-1.3.4.tar.gz", hash = "sha256:8e4352fb93d5a735c788110d2e7ac8e8031eb06ccbfe8d324ab71735015f9342"},
 ]
 urllib3 = [
     {file = "urllib3-1.26.9-py2.py3-none-any.whl", hash = "sha256:44ece4d53fb1706f667c9bd1c648f5469a2ec925fcf3a776667042d645472c14"},
