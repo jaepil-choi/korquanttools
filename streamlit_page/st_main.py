@@ -3,6 +3,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+import quantstats as qs
+
 ## Custom libs
 from korquanttools.pricevolume.loader import KRXPriceDM
 from korquanttools.pricevolume.utils import DateUtil
@@ -45,7 +47,10 @@ if dropbox == APPS[1]:
 
     df = st_utils.get_price('KS11', "2017-01-01", "2022-04-30")
 
-    st.line_chart(df['Close'])
+    returns = df['Change']
+    st.line_chart(returns.cumsum())
+
+    qs.reports.full(returns)
 
 ### Market Map ###
 
