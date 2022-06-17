@@ -62,6 +62,10 @@ if dropbox == APPS[2]:
     START = 20220101
     END = 20220510
 
+    # Download usually successful, but sometimes 403 returned from KRX.
+    # Conclusion: Don't rely on KRX live-scraping. Use cache.
+    # Live-scraping is also very slow. 5 month dataframe generation takes a lot.
+    # If cache size is too big for Streamlit, use external RESTful API deployed on a seperate server.
     pricevolume = KRXPriceDM(START, END)
     close_df = pricevolume.get_data('close')
     st.dataframe(close_df)
