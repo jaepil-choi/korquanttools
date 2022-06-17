@@ -50,13 +50,13 @@ if dropbox == APPS[1]:
     returns = df['Change']
     st.line_chart(returns.cumsum())
 
-    st.pyplot(returns.plot())
+    # st.pyplot(returns.plot())
 
-    st.pyplot(plt.plot(returns))
+    # st.pyplot(plt.plot(returns))
 
-    st.pyplot(qs.reports.full(returns))
+    st.pyplot(fig=qs.reports._plots.returns(returns, show=False))
 
-### Market Map ###
+### Market Map ### 
 
 if dropbox == APPS[2]:
     START = 20220101
