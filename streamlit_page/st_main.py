@@ -38,11 +38,11 @@ with st.sidebar:
 
 
 
-if dropbox == APPS[1]:
+if dropbox == APPS[0]:
     pass
 
 if dropbox == APPS[1]:
-    st.header(APPS[0])
+    st.header(APPS[1])
     st.title('시장 정보를 확인합니다.')
 
     df = st_utils.get_price('KS11', "2017-01-01", "2022-04-30")
