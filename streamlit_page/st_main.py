@@ -50,6 +50,10 @@ if dropbox == APPS[1]:
     returns = df['Change']
     st.line_chart(returns.cumsum())
 
+    returns.plot()
+
+    plt.plot(returns)
+
     qs.reports.full(returns)
 
 ### Market Map ###
