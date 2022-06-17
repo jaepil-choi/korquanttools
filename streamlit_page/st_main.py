@@ -4,7 +4,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 ## Custom libs
-from korquanttools import pricevolume
+from korquanttools.pricevolume.loader import KRXPriceDM
+from korquanttools.pricevolume.utils import DateUtil
+import st_utils
 
 plt.rc('font', family='Malgun Gothic')
 
@@ -13,6 +15,7 @@ st.title(':chart_with_upwards_trend: Finance Dashboard')
 st.markdown('---')
 
 APPS = [
+    '0. About me',
     '1. Market Graph',
     '2. Market Map',
     '3. Market Grouping',
@@ -31,6 +34,36 @@ with st.sidebar:
 # - HoldingPeriodReturn, 
 # - Winners/Losers
 
-if dropbox == APPS[0]:
+
+
+if dropbox == APPS[1]:
+    pass
+
+if dropbox == APPS[1]:
     st.header(APPS[0])
     st.title('시장 정보를 확인합니다.')
+
+    df = st_utils.get_price('KS11', "2017-01-01", "2022-04-30")
+
+    st.line_chart(df['Close'])
+
+### Market Map ###
+
+if dropbox == APPS[1]:
+    START = 20220101
+    END = 20220510
+
+    pricevolume = KRXPriceDM(START, END)
+    close_df = pricevolume.get_data('close')
+    st.dataframe(close_df)
+    
+
+### Market Grouping ###
+
+if dropbox == APPS[2]:
+    pass
+
+### Event Analysis ###
+
+if dropbox == APPS[3]:
+    pass
