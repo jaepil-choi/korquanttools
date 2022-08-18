@@ -7,7 +7,7 @@ import datetime
 
 class DateUtil:
     @staticmethod
-    def validate_date(yyyymmdd: Union[str, int], start="19900101", end="21000101") -> bool:
+    def validate_date(yyyymmdd: Union[str, int], min_date=19900101, max_date=21000101) -> bool:
         """Check wheter the given input has valid date format & value regardless of type
 
         Args:
@@ -19,22 +19,22 @@ class DateUtil:
             bool: True if the input has a valid date format & value. 
         """        
 
-        start_date = pd.to_datetime(start)
-        end_date = pd.to_datetime(end)
+        min_date = pd.to_datetime(str(min_date))
+        max_date = pd.to_datetime(str(max_date))
 
         if isinstance(yyyymmdd, (str, int)):
             date = str(yyyymmdd)
 
             try:
                 date = pd.to_datetime(yyyymmdd)
-                return (start_date < date < end_date)
+                return (min_date < date < max_date)
             except:
                 return False
         
         if isinstance(yyyymmdd, datetime.datetime) or isinstance(yyyymmdd, np.datetime64):
             try:
                 date = pd.to_datetime(yyyymmdd)
-                return (start_date < date < end_date)
+                return (min_date < date < max_date)
             except:
                 return False
         else:
