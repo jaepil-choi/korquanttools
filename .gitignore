@@ -190,3 +190,5 @@ sandbox.py
 cache/
 *.pkl
 *.pickle
+*.zip
+*.7z
